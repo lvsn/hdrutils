@@ -1,6 +1,11 @@
 function im = hdr_imread(filename, varargin)
 % Wrapper for imread that supports HDR formats
 % 
+%   im = hdr_imread(filename, ...)
+%
+% See also:
+%   imread
+%
 % ----------
 % Jean-Francois Lalonde
 

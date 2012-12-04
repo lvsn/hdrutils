@@ -1,6 +1,11 @@
 function hdr_imwrite(im, filename, varargin)
 % Wrapper for imwrite that supports HDR formats
 % 
+%   hdr_imwrite(im, filename, ...)
+%
+% See also:
+%   imwrite
+%   
 % ----------
 % Jean-Francois Lalonde
 
