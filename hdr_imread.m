@@ -9,7 +9,7 @@ function im = hdr_imread(filename, varargin)
 % ----------
 % Jean-Francois Lalonde
 
-[~,~,ext] = fileparts(filename);
+[p,f,ext] = fileparts(filename);
 
 switch lower(ext)
     case '.hdr'
@@ -19,6 +19,18 @@ switch lower(ext)
     case '.exr'
         % openEXR format
         im = exrread(filename);
+        
+    case {'.nef', '.cr2'}
+        % Nikon/Canon RAW formats, use dcraw to convert.
+        cmd = sprintf('dcraw -v -6 -T -W -g 1 1 -w %s', filename);
+        system(cmd);
+        
+        % Read the generated tiff file
+        tiffFile = fullfile(p, [f, '.tiff']);
+        im = im2double(imread(tiffFile));
+        
+        % Clean up 
+        delete(tiffFile);
         
     otherwise
         % other image formats supported by imread
