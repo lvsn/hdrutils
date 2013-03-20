@@ -3,19 +3,15 @@ function im = hdr_imread(filename, varargin)
 % 
 %   im = hdr_imread(filename, ...)
 %
-% Note:
-%   Uses the command-line executable 'dcraw' to read RAW files. See:
-%   http://www.cybercom.net/~dcoffin/dcraw/
-%
 % See also:
 %   imread
 %   exrread
-%   dcraw 
+%   raw2tiff
 %
 % ----------
 % Jean-Francois Lalonde
 
-[p,f,ext] = fileparts(filename);
+[~,~,ext] = fileparts(filename);
 
 switch lower(ext)
     case '.hdr'
@@ -26,21 +22,11 @@ switch lower(ext)
         % openEXR format
         im = exrread(filename);
         
-    case {'.nef', '.cr2'}
-        % Nikon/Canon RAW formats, use dcraw to convert.
-        % options used are:
-        %   -v     => verbose
-        %   -4     => linear 16-bits
-        %   -T     => save in .tiff format
-        %          => default white balance behavior (D65 light source)
-        %   -o 0   => no color profile
-        %   -q 3   => highest possible Bayer interpolation
-        % See http://www.guillermoluijk.com/tutorial/dcraw/index_en.htm
-        cmd = sprintf('dcraw -v -4 -T -q 3 -o 0 %s', filename);
-        system(cmd);
+    case {'.nef', '.cr2'}       
+        % First, convert to tiff
+        tiffFile = raw2tiff(filename);
         
         % Read the generated tiff file
-        tiffFile = fullfile(p, [f, '.tiff']);
         im = im2double(imread(tiffFile));
         
         % Clean up 
