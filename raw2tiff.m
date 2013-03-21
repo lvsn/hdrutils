@@ -13,7 +13,7 @@ function tiffFilename = raw2tiff(rawFilename, tiffFilename)
 %       -v     => verbose
 %       -4     => linear 16-bits
 %       -T     => save in .tiff format
-%       -w     => use camera's white balance 
+%              => use default D65 white balance (don't specify the -w flag)
 %       -o 0   => no color profile
 %       -q 3   => highest possible Bayer interpolation
 %   See http://www.guillermoluijk.com/tutorial/dcraw/index_en.htm
@@ -24,7 +24,7 @@ function tiffFilename = raw2tiff(rawFilename, tiffFilename)
 % ----------
 % Jean-Francois Lalonde
 
-cmd = sprintf('dcraw -v -4 -T -w -q 3 -o 0 %s', rawFilename);
+cmd = sprintf('dcraw -v -4 -T -q 3 -o 0 %s', rawFilename);
 system(cmd);
 
 [d,f] = fileparts(rawFilename);
