@@ -3,8 +3,6 @@ function tiffFilename = raw2tiff(rawFilename, tiffFilename)
 %
 %   tiffFilename = raw2tiff(rawFilename, <tiffFilename>);
 %
-% The output TIFF file will have the same 
-%
 % Notes:
 %   Uses a system call to dcraw, so it must be installed and working
 %   properly.
