@@ -1,4 +1,4 @@
-function ev = evFromExif(imgPath, varargin)
+function ev = evFromExif(imgPath)
 % Extracts EV (Exposure Value) from EXIF.
 %
 %   ev = evFromExif(imgPath)
@@ -12,8 +12,6 @@ function ev = evFromExif(imgPath, varargin)
 %
 % ----------
 % Jean-Francois Lalonde
-
-parseVarargin(varargin{:});
 
 info = imfinfo(imgPath);
 
