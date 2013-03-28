@@ -18,6 +18,9 @@ parseVarargin(varargin{:});
 info = imfinfo(imgPath);
 
 if isfield(info, 'DigitalCamera')
+    if length(info) > 1
+        info = info(1);
+    end
     t = info.DigitalCamera.ExposureTime;
     N = info.DigitalCamera.FNumber;
     iso = info.DigitalCamera.ISOSpeedRatings;
