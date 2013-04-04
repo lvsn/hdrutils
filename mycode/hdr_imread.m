@@ -49,28 +49,30 @@ end
         
         info = imfinfo(filename);
         if ~isempty(info)
-            switch info.Orientation
-                case 1
-                    
-                case 2
-                    im = im(:,end:-1:1,:);
-                case 3
-                    im = imrotate(im,180);
-                    im = im(:,end:-1:1,:);
-                case 4
-                    im = im(:,end:-1:1,:);
-                    
-                case 6
-                    im = imrotate(im,-90);
-                case 5
-                    im = im(:,end:-1:1,:);
-                    im = imrotate(im,-90);
-                    
-                case 8
-                    im = imrotate(im,90);
-                case 7
-                    im = imrotate(im,90);
-                    im = im(:,end:-1:1,:);
+            if isfield(info, 'Orientation')
+                switch info.Orientation
+                    case 1
+                        
+                    case 2
+                        im = im(:,end:-1:1,:);
+                    case 3
+                        im = imrotate(im,180);
+                        im = im(:,end:-1:1,:);
+                    case 4
+                        im = im(:,end:-1:1,:);
+                        
+                    case 6
+                        im = imrotate(im,-90);
+                    case 5
+                        im = im(:,end:-1:1,:);
+                        im = imrotate(im,-90);
+                        
+                    case 8
+                        im = imrotate(im,90);
+                    case 7
+                        im = imrotate(im,90);
+                        im = im(:,end:-1:1,:);
+                end
             end
         end
     end
