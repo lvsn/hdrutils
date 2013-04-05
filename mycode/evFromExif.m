@@ -21,7 +21,38 @@ if isfield(info, 'DigitalCamera')
     end
     t = info.DigitalCamera.ExposureTime;
     N = info.DigitalCamera.FNumber;
-    iso = info.DigitalCamera.ISOSpeedRatings;
+    
+    if isfield(info.DigitalCamera, 'ISOSpeedRatings')
+        iso = info.DigitalCamera.ISOSpeedRatings;
+    else
+        % this is sometimes hidden "deeper" in the EXIF information, which
+        % imfinfo is not able to extract. Use the more powerful exiftool
+        % (must be installed on the system)
+        
+        % if the path is not local, download the image first!
+        if ~isempty(strfind(imgPath, 'http'))
+            % download to tmp file
+            [~,~,ext] = fileparts(imgPath);
+            tmpImgPath = [tempname, ext];
+            cmd = sprintf('wget -nv -O %s %s', tmpImgPath, imgPath);
+            r = system(cmd);
+            
+            if r
+                error('Could not download the image');
+            end
+            imgPath = tmpImgPath;
+        end
+        cmd = sprintf('exiftool -ISO %s', imgPath);
+        [r,s] = system(cmd);
+        
+        if r
+            error('Could not run exiftool');
+        end
+        
+        s = textscan(s, '%s %d', 1, 'Delimiter', ':');
+        iso = double(s{2});
+        
+    end
 else
     error('Could not find exposure information in image header');
 end
