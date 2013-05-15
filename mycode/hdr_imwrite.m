@@ -25,6 +25,10 @@ switch lower(ext)
         % 16-bit tiff
         imwrite(im2uint16(im), filename, varargin{:});
         
+    case '.png'
+        % 16-bit png
+        imwrite(im2uint16(im), filename, 'bitdepth', 16, varargin{:});
+        
     otherwise
         % other image formats supported by imwrite
         imwrite(im, filename, varargin{:});
