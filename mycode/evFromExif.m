@@ -34,12 +34,8 @@ if isfield(info, 'DigitalCamera')
             % download to tmp file
             [~,~,ext] = fileparts(imgPath);
             tmpImgPath = [tempname, ext];
-            cmd = sprintf('wget -nv -O %s %s', tmpImgPath, imgPath);
-            r = system(cmd);
+            urlwrite(imgPath, tmpImgPath);
             
-            if r
-                error('Could not download the image');
-            end
             imgPath = tmpImgPath;
         end
         cmd = sprintf('exiftool -ISO %s', imgPath);
