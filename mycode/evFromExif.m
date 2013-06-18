@@ -1,7 +1,7 @@
-function ev = evFromExif(imgPath)
+function [ev, t, N, iso] = evFromExif(imgPath)
 % Extracts EV (Exposure Value) from EXIF.
 %
-%   ev = evFromExif(imgPath)
+%   [ev, t, N, iso] = evFromExif(imgPath)
 %
 % Computes the Exposure Value (EV) from the information available within
 % the EXIF fields. 
