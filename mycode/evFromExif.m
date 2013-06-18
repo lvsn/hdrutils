@@ -13,6 +13,18 @@ function ev = evFromExif(imgPath)
 % ----------
 % Jean-Francois Lalonde
 
+if iscell(imgPath)
+    ev = zeros(1, length(imgPath));
+    t = zeros(1, length(imgPath));
+    N = zeros(1, length(imgPath));
+    iso = zeros(1, length(imgPath));
+    for i_img = 1:length(imgPath)
+        [ev(i_img), t(i_img), N(i_img), iso(i_img)] = ...
+            evFromExif(imgPath{i_img});
+    end
+    return;
+end
+
 info = imfinfo(imgPath);
 
 if isfield(info, 'DigitalCamera')
