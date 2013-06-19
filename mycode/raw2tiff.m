@@ -1,7 +1,7 @@
-function tiffFilename = raw2tiff(rawFilename, tiffFilename)
+function tiffFilename = raw2tiff(rawFilename, varargin)
 % Converts a RAW file to 16-bits linear TIFF file.
 %
-%   tiffFilename = raw2tiff(rawFilename, <tiffFilename>);
+%   tiffFilename = raw2tiff(rawFilename, ...);
 %
 % Notes:
 %   Uses a system call to dcraw, so it must be installed and working
@@ -22,7 +22,23 @@ function tiffFilename = raw2tiff(rawFilename, tiffFilename)
 % ----------
 % Jean-Francois Lalonde
 
-cmd = sprintf('dcraw -v -4 -T -q 3 -o 0 %s', rawFilename);
+% enabling this will disable Bayer interpolation and rescaling, so the
+% image will be twice as small as the camera resolution
+fullRaw = false;
+
+% optional output filename
+tiffFilename = '';
+
+parseVarargin(varargin{:});
+
+opts = '-v -4 -T';
+if fullRaw
+    opts = [opts ' -D -h'];
+else
+    opts = [opts ' -q 3 -o 0'];
+end
+
+cmd = sprintf('dcraw %s %s', opts, rawFilename);
 system(cmd);
 
 [d,f] = fileparts(rawFilename);
@@ -32,7 +48,7 @@ assert(exist(outFilename, 'file')>0, ...
     'Could not find TIFF file (%s)', outFilename);
 
 % Move files around if needed
-if nargin > 1 && ~isequal(outFilename, tiffFilename)
+if ~isempty(tiffFilename) && ~isequal(outFilename, tiffFilename)
     movefile(outFilename, tiffFilename);
 else
     tiffFilename = outFilename;
