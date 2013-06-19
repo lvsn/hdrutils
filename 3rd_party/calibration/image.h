@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <typeinfo>
 #include "log.h"
-#include "TiffIO.h"
+//#include "TiffIO.h"
 
 template <typename T, int N>
 class ImageBase
@@ -43,16 +43,18 @@ public:
 
   void read(const std::string& fn)
   {
-    size_t width, height, spp, bps;
-    T* ptr = TIFFReadImage<T>(fn.c_str(), width, height, spp, bps);
-    M = cv::Mat_<V>(height, width, (V*)ptr);
+//    size_t width, height, spp, bps;
+//    T* ptr = TIFFReadImage<T>(fn.c_str(), width, height, spp, bps);
+//    M = cv::Mat_<V>(height, width, (V*)ptr);
+      M = cv::imread(fn, CV_LOAD_IMAGE_ANYDEPTH);
     //LOGV4(width, height, spp, bps);
   }
 
   void writeTiff(const std::string& fn)
   {
     //LOGV4(N, sizeof(T)*8, getWidth(), getHeight());
-    TIFFWriteImage(fn.c_str(), (T*)M.ptr(), getWidth(), getHeight(), N, sizeof(T)*8);
+      cv::imwrite(fn, M);
+//    TIFFWriteImage(fn.c_str(), (T*)M.ptr(), getWidth(), getHeight(), N, sizeof(T)*8);
   }
   
   int getPixels() const
