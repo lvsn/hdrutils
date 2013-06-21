@@ -29,9 +29,13 @@ fullRaw = false;
 % optional output filename
 tiffFilename = '';
 
+% over-ride dead pixel file
+deadPixelFile = getPathName('data', '130315-sigmaCalibration', ...
+    'radiometric', 'deadPixels', 'deadPixels.txt');
+
 parseVarargin(varargin{:});
 
-opts = '-v -4 -T';
+opts = sprintf('-v -4 -T -P %s', deadPixelFile);
 if fullRaw
     opts = [opts ' -D -h'];
 else
