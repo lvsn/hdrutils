@@ -34,7 +34,7 @@ switch lower(ext)
         tiffFile = raw2tiff(filename, 'fullRaw', fullRawVal);
         
         % Read the generated tiff file
-        im = im2double(imread(tiffFile));
+        im = hdr_imread(tiffFile);
         
         % Make sure we get rid of the alpha channel
         if size(im, 3) == 4
