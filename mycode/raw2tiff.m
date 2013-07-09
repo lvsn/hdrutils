@@ -35,7 +35,7 @@ deadPixelFile = getPathName('data', '130315-sigmaCalibration', ...
 
 parseVarargin(varargin{:});
 
-opts = sprintf('-v -4 -T -P %s', deadPixelFile);
+opts = sprintf('-v -4 -T -t 0 -P %s', deadPixelFile);
 if fullRaw
     opts = [opts ' -D -h'];
 else
