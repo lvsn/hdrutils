@@ -43,7 +43,12 @@ else
 end
 
 cmd = sprintf('dcraw %s %s', opts, rawFilename);
-system(cmd);
+s = system(cmd);
+
+if s > 0
+    error(['raw2tiff:dcraw', 'Error running dcraw. '...
+        'Is is installed properly?']);
+end
 
 [d,f] = fileparts(rawFilename);
 outFilename = fullfile(d, [f '.tiff']);
