@@ -13,6 +13,22 @@ function im = hdr_imread(filename, varargin)
 
 [~,~,ext] = fileparts(filename);
 
+% check if we've passed the 'fullRaw' option. Strip it out if yes.
+fullRawInd = find(strcmp(varargin, 'fullRaw'));
+fullRawVal = false;
+if ~isempty(fullRawInd)
+    fullRawVal = varargin{fullRawInd+1};
+end
+
+if fullRawVal
+    switch lower(ext)
+        case {'.nef', '.cr2'}
+        otherwise
+            warning('hdr_imread:fullRaw', ...
+                'fullRaw option not used with extension %s', ext);
+    end
+end
+
 switch lower(ext)
     case '.hdr'
         % radiance HDR format
@@ -23,13 +39,6 @@ switch lower(ext)
         im = exrread(filename);
         
     case {'.nef', '.cr2'}
-        % check if we've passed the 'fullRaw' option. Strip it out if yes.
-        fullRawInd = find(strcmp(varargin, 'fullRaw'));
-        fullRawVal = false;
-        if ~isempty(fullRawInd)
-            fullRawVal = varargin{fullRawInd+1};
-        end
-        
         % First, convert to tiff
         tiffFile = raw2tiff(filename, 'fullRaw', fullRawVal);
         
