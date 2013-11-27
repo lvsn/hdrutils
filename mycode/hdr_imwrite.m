@@ -1,4 +1,4 @@
-function hdr_imwrite(im, filename, varargin)
+function ext = hdr_imwrite(im, filename, varargin)
 % Wrapper for imwrite that supports HDR formats
 % 
 %   hdr_imwrite(im, filename, ...)
@@ -11,8 +11,9 @@ function hdr_imwrite(im, filename, varargin)
 
 
 [~,~,ext] = fileparts(filename);
+ext = lower(ext);
 
-switch lower(ext)
+switch ext
     case '.hdr'
         % radiance HDR format
         hdrwrite(im, filename, varargin{:});
