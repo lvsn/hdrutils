@@ -6,6 +6,9 @@
 %	im = exrread(filename)
 %	[im, mask] = exrread(filename)
 %
+%	im = exrread(filename, layername)
+%   Extract a named layer from the EXR file
+%
 % -Inputs-
 %	filename	path to image
 %
@@ -13,7 +16,8 @@
 %	im		the image
 %	mask		the alpha channel
 %
-% Last Modified: 03/11/2008
+% Last Modified: 2013
+
 function [im,mask] = exrread(filename)
 
 	% This file only exists for the help documentation
