@@ -57,9 +57,14 @@ if isfield(info, 'DigitalCamera')
             error('Could not run exiftool');
         end
         
-        s = textscan(s, '%s %d', 1, 'Delimiter', ':');
-        iso = double(s{2});
-        
+        s = textscan(s, '%s %s', 1, 'Delimiter', ':');
+        if ~isnan(str2double(s{2}{1}))
+            iso = str2double(s{2}{1});
+        else
+            % contains a string too?
+            s = textscan(s{2}{1}, '%s %d', 1, 'Delimiter', ' ');
+            iso = double(s{2});
+        end
     end
 else
     error('Could not find exposure information in image header');
