@@ -1,7 +1,7 @@
-function im = hdr_imread(filename, varargin)
+function [im, rotFcn] = hdr_imread(filename, varargin)
 % Wrapper for imread that supports HDR formats.
 %
-%   im = hdr_imread(filename, ...)
+%   [im, rotFcn] = hdr_imread(filename, ...)
 %
 % Additional options can be used as optional inputs to imread. In addition,
 % it also supports:
@@ -44,6 +44,14 @@ if fullRawVal
     end
 end
 
+if autoRotate
+    switch lower(ext)
+        case {'.hdr', '.exr'}
+            warning('hdr_imread:autoRotate', ...
+                'autoRotate option not used with extension %s', ext);
+    end
+end
+
 switch lower(ext)
     case '.hdr'
         % radiance HDR format
@@ -65,18 +73,19 @@ switch lower(ext)
             im = im(:,:,1:3);
         end
         
-        im = rot(im, filename);
+        [im, rotFcn] = rotFromExif(im, filename);
         
         % Clean up
         delete(tiffFile);
         
     otherwise
         % other image formats supported by imread
-        im = im2double(imreadAutoRot(filename, varargin{:}));
+        [im, rotFcn] = imreadAutoRot(filename, varargin{:});
+        im = im2double(im);
         
 end
 
-    function im = imreadAutoRot(filename, varargin)
+    function [im, rotFcn] = imreadAutoRot(filename, varargin)
         % Handle auto-rotation in JPEG (from EXIF tag).
         %
         % ----------
@@ -84,40 +93,47 @@ end
         % Reference: http://www.impulseadventure.com/photo/exif-orientation.html
         
         im = imread(filename, varargin{:});
-        im = rot(im, filename);
+        [im, rotFcn] = rotFromExif(im, filename);
     end
 
-    function im = rot(im, filename)
+    function [im, rotFcn] = rotFromExif(im, filename)
+        % don't do anything
+        rotFcn = @(x) x;
+        
         if ~autoRotate
             return;
         end
         info = imfinfo(filename);
         if ~isempty(info) && isfield(info, 'Orientation')
-            switch info(1).Orientation
-                case 1
-                    
-                case 2
-                    im = im(:,end:-1:1,:);
-                case 3
-                    im = imrotate(im,180);
-                    % think that's a bug! should just be rotated
-%                     im = im(:,end:-1:1,:);
-                case 4
-                    im = im(:,end:-1:1,:);
-                    
-                case 6
-                    im = imrotate(im,-90);
-                case 5
-                    im = im(:,end:-1:1,:);
-                    im = imrotate(im,-90);
-                    
-                case 8
-                    im = imrotate(im,90);
-                case 7
-                    im = imrotate(im,90);
-                    im = im(:,end:-1:1,:);
-            end
+            rotFcn = @(i) rot(i, info(1).Orientation);
+            im = rotFcn(im);
+        end
+    end
 
+    function im = rot(im, orientation)
+        switch orientation
+            case 1
+                
+            case 2
+                im = im(:,end:-1:1,:);
+            case 3
+                im = imrotate(im,180);
+                % think that's a bug! should just be rotated
+                %                     im = im(:,end:-1:1,:);
+            case 4
+                im = im(:,end:-1:1,:);
+                
+            case 6
+                im = imrotate(im,-90);
+            case 5
+                im = im(:,end:-1:1,:);
+                im = imrotate(im,-90);
+                
+            case 8
+                im = imrotate(im,90);
+            case 7
+                im = imrotate(im,90);
+                im = im(:,end:-1:1,:);
         end
     end
 end
