@@ -58,8 +58,9 @@ switch lower(ext)
         im = hdrread(filename, varargin{:});
         
     case '.exr'
-        % openEXR format
-        im = exrread(filename);
+        % openEXR format --> use pfstools
+%         im = exrread(filename);
+        im = pfs_read_image(filename);
         
     case {'.nef', '.cr2'}
         % First, convert to tiff

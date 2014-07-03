@@ -19,8 +19,9 @@ switch ext
         hdrwrite(im, filename, varargin{:});
         
     case '.exr'
-        % openEXR format
-        exrwrite(im, filename);
+        % openEXR format --> pfstools
+%         exrwrite(im, filename);
+        pfs_write_image(filename, im);
         
     case {'.tif', '.tiff'}
         % 16-bit tiff
