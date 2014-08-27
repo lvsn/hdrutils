@@ -1,7 +1,7 @@
 function varargout = imshowHDR(img, varargin)
 % Displays an image, with keyboard shortcuts to in(de)crease the exposure.
 % 
-%   <h> = imshowHDR(img)
+%   <h> = imshowHDR(img, ...)
 % 
 % Press:
 %   cmd-] to increase the exposure
