@@ -30,7 +30,7 @@ fullRaw = false;
 tiffFilename = '';
 
 % over-ride dead pixel file
-deadPixelFile = getPathName('data', '130315-sigmaCalibration', ...
+deadPixelFile = fullfile('data', '130315-sigmaCalibration', ...
     'radiometric', 'deadPixels', 'deadPixels.txt');
 
 parseVarargin(varargin{:});
