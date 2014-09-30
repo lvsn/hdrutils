@@ -8,6 +8,8 @@ function varargout = imshowHDR(img, varargin)
 %   cmd-[ to decrease the exposure
 %   cmd-0 to reset the exposure
 %
+% Note: Use 'ctrl' instead of 'cmd' on Linux/Windows computers. 
+%
 % ----------
 % Jean-Francois Lalonde
 
@@ -44,9 +46,9 @@ set(figHandle, 'UserData', figData);
     function keyPressFcn(figHandle, event)
         currAxes = get(figHandle, 'CurrentAxes');
         if currAxes == axesHandle
-            if any(strcmp(event.Modifier, 'command'))
-                % 'command' key is held down
-                
+            if any(strcmp(event.Modifier, 'command')) || ...
+                    any(strcmp(event.Modifier, 'control'))
+                % 'command' or 'control' key is held down
                 if any(strcmp(event.Modifier, 'shift'))
                     % 'shift' key is also held down
                     % --> loop over all axes
@@ -58,28 +60,6 @@ set(figHandle, 'UserData', figData);
                 else
                     doHDRAction(currAxes, event.Character);
                 end
-            else if any(strcmp(event.Modifier, 'control'))
-                % 'control' key is held down, for linux matlab2014a
-                % processing event.Character in Linux, since ctrl+[ = '';
-                    if strcmp(event.Key,'rightbracket')
-                        event.Character = ']';
-                    else if strcmp(event.Key,'leftbracket')
-                            event.Character = '[';                        
-                        end
-                    end                   
-                    
-                    if any(strcmp(event.Modifier, 'shift'))
-                        % 'shift' key is also held down
-                        % --> loop over all axes
-                        allAxes = findall(figHandle, 'Type', 'axes');
-                        for i_ax = 1:length(allAxes)
-                            doHDRAction(allAxes(i_ax), event.Character);
-                        end
-
-                    else
-                        doHDRAction(currAxes, event.Character);
-                    end
-                end 
             end
         end
     end
