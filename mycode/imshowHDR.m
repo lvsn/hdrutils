@@ -58,6 +58,28 @@ set(figHandle, 'UserData', figData);
                 else
                     doHDRAction(currAxes, event.Character);
                 end
+            else if any(strcmp(event.Modifier, 'control'))
+                % 'control' key is held down, for linux matlab2014a
+                % processing event.Character in Linux, since ctrl+[ = '';
+                    if strcmp(event.Key,'rightbracket')
+                        event.Character = ']';
+                    else if strcmp(event.Key,'leftbracket')
+                            event.Character = '[';                        
+                        end
+                    end                   
+                    
+                    if any(strcmp(event.Modifier, 'shift'))
+                        % 'shift' key is also held down
+                        % --> loop over all axes
+                        allAxes = findall(figHandle, 'Type', 'axes');
+                        for i_ax = 1:length(allAxes)
+                            doHDRAction(allAxes(i_ax), event.Character);
+                        end
+
+                    else
+                        doHDRAction(currAxes, event.Character);
+                    end
+                end 
             end
         end
     end
