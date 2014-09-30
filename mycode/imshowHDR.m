@@ -48,6 +48,8 @@ set(figHandle, 'UserData', figData);
         if currAxes == axesHandle
             if any(strcmp(event.Modifier, 'command')) || ...
                     any(strcmp(event.Modifier, 'control'))
+                event.Character = event.Key;
+                
                 % 'command' or 'control' key is held down
                 if any(strcmp(event.Modifier, 'shift'))
                     % 'shift' key is also held down
@@ -70,13 +72,13 @@ set(figHandle, 'UserData', figData);
         
         if ~isempty(axesData)
             switch character
-                case '['
+                case {'[', 'leftbracket'}
                     % decrease exposure
                     axesData.imgScaleFactor = axesData.imgScaleFactor/1.5;
                     set(curAxesHandle, 'UserData', axesData);
                     updateDisplay(axesData);
                     
-                case ']'
+                case {']', 'rightbracket'}
                     % increase exposure
                     axesData.imgScaleFactor = axesData.imgScaleFactor*1.5;
                     set(curAxesHandle, 'UserData', axesData);
