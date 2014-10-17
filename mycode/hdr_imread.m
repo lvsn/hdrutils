@@ -69,12 +69,10 @@ switch lower(ext)
         im = hdr_imread(tiffFile);
         
         % Make sure we get rid of the alpha channel
-        if size(im, 3) == 4
+        if size(im, 3) > 3
             im = im(:,:,1:3);
         end
-        
-        [im, rotFcn] = rotFromExif(im, filename);
-        
+                
         % Clean up
         delete(tiffFile);
         
