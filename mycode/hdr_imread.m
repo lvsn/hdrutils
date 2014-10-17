@@ -72,6 +72,9 @@ switch lower(ext)
         if size(im, 3) > 3
             im = im(:,:,1:3);
         end
+        
+        % don't rotate
+        rotFcn = @(x) x; 
                 
         % Clean up
         delete(tiffFile);
