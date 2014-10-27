@@ -27,18 +27,19 @@ figHandle = get(axesHandle, 'Parent');
 axesData.imgScaleFactor = 1;
 axesData.img = img;
 axesData.imgHandle = h;
+axesData.name = tempname;
 set(axesHandle, 'UserData', axesData);
 
 figData = get(figHandle, 'UserData');
 if isfield(figData, 'imshowHDRData')
     % see if we already have a callback for these axes
-    if ~figData.imshowHDRData.callbacks.isKey(axesHandle)
+    if ~figData.imshowHDRData.callbacks.isKey(axesHandle.UserData.name)
         id = iptaddcallback(figHandle, 'WindowKeyPressFcn', @keyPressFcn);
-        figData.imshowHDRData.callbacks(axesHandle) = id;        
+        figData.imshowHDRData.callbacks(axesHandle.UserData.name) = id;        
     end
 else
     id = iptaddcallback(figHandle, 'WindowKeyPressFcn', @keyPressFcn);
-    figData.imshowHDRData.callbacks = containers.Map(axesHandle, id);
+    figData.imshowHDRData.callbacks = containers.Map(axesHandle.UserData.name, id);
 end
 
 set(figHandle, 'UserData', figData);
