@@ -25,7 +25,10 @@ if iscell(imgPath)
     return;
 end
 
+% turn off annoying warning
+warnState = warning('off', 'MATLAB:imagesci:tifftagsread:badTagValueDivisionByZero');
 info = imfinfo(imgPath);
+warning(warnState);
 
 if isfield(info, 'DigitalCamera')
     if length(info) > 1
