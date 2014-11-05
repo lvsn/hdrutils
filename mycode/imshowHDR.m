@@ -33,13 +33,13 @@ set(axesHandle, 'UserData', axesData);
 figData = get(figHandle, 'UserData');
 if isfield(figData, 'imshowHDRData')
     % see if we already have a callback for these axes
-    if ~figData.imshowHDRData.callbacks.isKey(axesHandle.UserData.name)
+    if ~figData.imshowHDRData.callbacks.isKey(axesData.name)
         id = iptaddcallback(figHandle, 'WindowKeyPressFcn', @keyPressFcn);
-        figData.imshowHDRData.callbacks(axesHandle.UserData.name) = id;        
+        figData.imshowHDRData.callbacks(axesData.name) = id;        
     end
 else
     id = iptaddcallback(figHandle, 'WindowKeyPressFcn', @keyPressFcn);
-    figData.imshowHDRData.callbacks = containers.Map(axesHandle.UserData.name, id);
+    figData.imshowHDRData.callbacks = containers.Map(axesData.name, id);
 end
 
 set(figHandle, 'UserData', figData);
