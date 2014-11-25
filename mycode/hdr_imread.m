@@ -1,4 +1,4 @@
-function [im, rotFcn] = hdr_imread(filename, varargin)
+function [im, rotFcn, alpha, depth] = hdr_imread(filename, varargin)
 % Wrapper for imread that supports HDR formats.
 %
 %   [im, rotFcn] = hdr_imread(filename, ...)
@@ -23,6 +23,11 @@ function [im, rotFcn] = hdr_imread(filename, varargin)
 [fullRaw, varargin] = lookforVarargin('fullRaw', false, varargin{:});
 [autoRotate, varargin] = lookforVarargin('autoRotate', true, varargin{:});
 [doCleanup, varargin] = lookforVarargin('doCleanup', true, varargin{:});
+
+% default return values
+alpha = [];
+depth = [];
+rotFcn = @(x) x;
 
     function [flag, varargin] = lookforVarargin(flagName, flagDefault, varargin)
         flag = flagDefault;
@@ -57,7 +62,9 @@ switch lower(ext)
         
     case '.exr'
         % openEXR format --> use pfstools
-        im = im2double(pfs_read_image(filename));
+        [im, alpha, depth] = pfs_read_image(filename);
+        im = im2double(im);
+        alpha = im2double(alpha);
         
     case {'.nef', '.cr2'}
         % First, convert to tiff
@@ -78,6 +85,11 @@ switch lower(ext)
         if doCleanup
             delete(tiffFile);
         end
+        
+    case '.png'
+        [im, ~, alpha] = imread(filename);
+        im = im2double(im);
+        alpha = im2double(alpha);
         
     otherwise
         % other image formats supported by imread
