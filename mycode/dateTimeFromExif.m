@@ -85,7 +85,9 @@ if iscell(imgPath)
 end
 
 if ~useExifTool
+    warnState = warning('off', 'MATLAB:imagesci:tifftagsread:badTagValueDivisionByZero');
     info = imfinfo(imgPath);
+    warning(warnState);
     dateTimeStr = info(1).DateTime;
 else
     % use exiftool. 
@@ -97,11 +99,14 @@ else
     
     outData = strsplit(outStr, '\n');
     dateTimeStr = outData{1};
-    utc = sscanf(outData{2}, '%d:%d');
-    if ~isempty(utc)
-        utc = utc(1);
+    utcStr = sscanf(outData{2}, '%d:%d');
+    if ~isempty(utcStr)
+        utc = utcStr(1);
     else
-        utc = -5;
+        warning('dateTimeFromExif:noutc', ...
+            ['Could not find UTC information in file %s. ', ...
+            '\nUsing default value: %d'], ...
+            imgPath, utc);
     end
 end
 
