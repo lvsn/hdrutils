@@ -62,9 +62,14 @@ switch lower(ext)
         
     case '.exr'
         % openEXR format --> use pfstools
-        [im, alpha, depth] = pfs_read_image(filename);
+        try
+            [im, alpha, depth] = pfs_read_image(filename);
+            alpha = im2double(alpha);
+
+        catch
+            im = pfs_read_image(filename);
+        end
         im = im2double(im);
-        alpha = im2double(alpha);
         
     case {'.nef', '.cr2'}
         % First, convert to tiff
