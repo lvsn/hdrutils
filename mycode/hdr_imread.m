@@ -1,4 +1,4 @@
-function [im, rotFcn] = hdr_imread(filename, varargin)
+function [im, rotFcn, alpha, depth] = hdr_imread(filename, varargin)
 % Wrapper for imread that supports HDR formats.
 %
 %   [im, rotFcn] = hdr_imread(filename, ...)
@@ -19,23 +19,26 @@ function [im, rotFcn] = hdr_imread(filename, varargin)
 
 [~,~,ext] = fileparts(filename);
 
-% check if we've passed the 'fullRaw' option. Strip it out if yes.
-fullRawInd = find(strcmp(varargin, 'fullRaw'));
-fullRawVal = false;
-if ~isempty(fullRawInd)
-    fullRawVal = varargin{fullRawInd+1};
-end
-varargin(fullRawInd:fullRawInd+1) = [];
+% check if we've passed the 'autoRotate' option. Strip if out if so.
+[fullRaw, varargin] = lookforVarargin('fullRaw', false, varargin{:});
+[autoRotate, varargin] = lookforVarargin('autoRotate', true, varargin{:});
+[doCleanup, varargin] = lookforVarargin('doCleanup', true, varargin{:});
 
-% check if we've passed the 'autoRotate' option. Strip if out if yes.
-autoRotateInd = find(strcmp(varargin, 'autoRotate'));
-autoRotate = true;
-if ~isempty(autoRotateInd)
-    autoRotate = varargin{autoRotateInd+1};
-end
-varargin(autoRotateInd:autoRotateInd+1) = [];
+% default return values
+alpha = [];
+depth = [];
+rotFcn = @(x) x;
 
-if fullRawVal
+    function [flag, varargin] = lookforVarargin(flagName, flagDefault, varargin)
+        flag = flagDefault;
+        flagInd = find(strcmp(varargin, flagName));
+        if ~isempty(flagInd)
+            flag = varargin{flagInd+1};
+        end
+        varargin(flagInd:flagInd+1) = [];
+    end
+
+if fullRaw
     switch lower(ext)
         case {'.nef', '.cr2'}
         otherwise
@@ -44,13 +47,13 @@ if fullRawVal
     end
 end
 
-if autoRotate
-    switch lower(ext)
-        case {'.hdr', '.exr'}
-            warning('hdr_imread:autoRotate', ...
-                'autoRotate option not used with extension %s', ext);
-    end
-end
+% if autoRotate
+%     switch lower(ext)
+%         case {'.hdr', '.exr'}
+%             warning('hdr_imread:autoRotate', ...
+%                 'autoRotate option not used with extension %s', ext);
+%     end
+% end
 
 switch lower(ext)
     case '.hdr'
@@ -59,11 +62,18 @@ switch lower(ext)
         
     case '.exr'
         % openEXR format --> use pfstools
-        im = im2double(pfs_read_image(filename));
+        try
+            [im, alpha, depth] = pfs_read_image(filename);
+            alpha = im2double(alpha);
+
+        catch
+            im = pfs_read_image(filename);
+        end
+        im = im2double(im);
         
     case {'.nef', '.cr2'}
         % First, convert to tiff
-        tiffFile = raw2tiff(filename, 'fullRaw', fullRawVal);
+        tiffFile = raw2tiff(filename, 'fullRaw', fullRaw);
         
         % Read the generated tiff file
         im = hdr_imread(tiffFile);
@@ -77,7 +87,14 @@ switch lower(ext)
         rotFcn = @(x) x; 
                 
         % Clean up
-        delete(tiffFile);
+        if doCleanup
+            delete(tiffFile);
+        end
+        
+    case '.png'
+        [im, ~, alpha] = imread(filename);
+        im = im2double(im);
+        alpha = im2double(alpha);
         
     otherwise
         % other image formats supported by imread
