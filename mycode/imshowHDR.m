@@ -74,13 +74,13 @@ set(figHandle, 'UserData', figData);
         
         if ~isempty(axesData)
             switch character
-                case {'[', 'leftbracket'}
+                case {'[', 'leftbracket', '8'}
                     % decrease exposure
                     axesData.imgScaleFactor = axesData.imgScaleFactor/1.5;
                     set(curAxesHandle, 'UserData', axesData);
                     updateDisplay(axesData);
                     
-                case {']', 'rightbracket'}
+                case {']', 'rightbracket', '9'}
                     % increase exposure
                     axesData.imgScaleFactor = axesData.imgScaleFactor*1.5;
                     set(curAxesHandle, 'UserData', axesData);
