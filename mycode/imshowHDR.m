@@ -50,7 +50,9 @@ set(figHandle, 'UserData', figData);
             if any(strcmp(event.Modifier, 'command')) || ...
                     any(strcmp(event.Modifier, 'control'))
                 if any(strcmp(event.Modifier, 'control'))
-                    event.Character = event.Key;
+                    character = event.Key;
+                else
+                    character = event.Character;
                 end
                 
                 % 'command' or 'control' key is held down
@@ -59,11 +61,11 @@ set(figHandle, 'UserData', figData);
                     % --> loop over all axes
                     allAxes = findall(figHandle, 'Type', 'axes');
                     for i_ax = 1:length(allAxes)
-                        doHDRAction(allAxes(i_ax), event.Character);
+                        doHDRAction(allAxes(i_ax), character);
                     end
                     
                 else
-                    doHDRAction(currAxes, event.Character);
+                    doHDRAction(currAxes, character);
                 end
             end
         end
