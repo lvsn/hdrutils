@@ -25,6 +25,7 @@ function [im, rotFcn, alpha, depth] = hdr_imread(filename, varargin)
 [fullRaw, varargin] = lookforVarargin('fullRaw', false, varargin{:});
 [autoRotate, varargin] = lookforVarargin('autoRotate', true, varargin{:});
 [doCleanup, varargin] = lookforVarargin('doCleanup', true, varargin{:});
+[EV, varargin] = lookforVarargin('EV', [], varargin{:});
 
 % default return values
 alpha = [];
@@ -108,6 +109,12 @@ switch lower(ext)
         [im, rotFcn] = imreadAutoRot(filename, varargin{:});
         im = im2double(im);
         
+end
+
+% check if we need to re-expose
+if ~isempty(EV)
+    curEV = evFromExif(filename);
+    im = reExposeImage(im, curEV, EV);
 end
 
     function [im, rotFcn] = imreadAutoRot(filename, varargin)
