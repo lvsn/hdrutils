@@ -6,7 +6,9 @@ function [im, rotFcn, alpha, depth] = hdr_imread(filename, varargin)
 % Additional options can be used as optional inputs to imread. In addition,
 % it also supports:
 %   - 'autoRotate' [true]: rotate according to the EXIF information
-%   - 'fullRaw' [false]: 
+%   - 'doCleanup' [true]: cleans temporary files (necessary when loading
+%   CR2's)
+%   - 'EV' []: defines target EV for re-exposure
 %   
 %
 % See also:
@@ -19,7 +21,7 @@ function [im, rotFcn, alpha, depth] = hdr_imread(filename, varargin)
 
 [~,~,ext] = fileparts(filename);
 
-% check if we've passed the 'autoRotate' option. Strip if out if so.
+% check if we've passed the following options. Strip them out if so.
 [fullRaw, varargin] = lookforVarargin('fullRaw', false, varargin{:});
 [autoRotate, varargin] = lookforVarargin('autoRotate', true, varargin{:});
 [doCleanup, varargin] = lookforVarargin('doCleanup', true, varargin{:});
