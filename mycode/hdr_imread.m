@@ -69,7 +69,12 @@ switch lower(ext)
             alpha = im2double(alpha);
 
         catch
-            im = pfs_read_image(filename);
+            try
+                im = pfs_read_image(filename);
+            catch
+                % looks like we don't have pfstools installed... 
+                im = exrread(filename);
+            end
         end
         im = im2double(im);
         
