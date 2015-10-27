@@ -47,7 +47,7 @@ s = system(cmd);
 
 if s > 0
     error(['raw2tiff:dcraw', 'Error running dcraw. '...
-        'Is is installed properly?']);
+        'Please install dcraw from: https://www.cybercom.net/~dcoffin/dcraw/']);
 end
 
 [d,f] = fileparts(rawFilename);
