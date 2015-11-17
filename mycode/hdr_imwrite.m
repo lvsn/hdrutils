@@ -20,8 +20,13 @@ switch ext
         
     case '.exr'
         % openEXR format --> pfstools
-%         exrwrite(im, filename);
-        pfs_write_image(filename, im);
+        try
+            % try pfstool
+            pfs_write_image(filename, im);
+        catch
+            % revert to exrwrite instead
+            exrwrite(im, filename);
+        end
         
     case {'.tif', '.tiff'}
         % 16-bit tiff
