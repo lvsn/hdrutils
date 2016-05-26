@@ -58,6 +58,12 @@ end
 %     end
 % end
 
+% it is checked if the file to read actually exists, this makes it clearer
+if exist(filename) ~= 2
+    error('The file %s does not exist.', filename);
+end
+
+
 switch lower(ext)
     case '.hdr'
         % radiance HDR format
