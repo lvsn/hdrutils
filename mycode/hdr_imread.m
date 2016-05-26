@@ -70,13 +70,18 @@ switch lower(ext)
             alpha = im2double(alpha);
 
         catch
-            warning('pfstools was not installed with alpha support.');
+            warning('pfstools was possibly not installed with alpha support.');
             try
                 im = pfs_read_image(filename);
             catch
-                warning('Could not use pfstools');
+                warning('Could not use pfstools, now trying exrread.');
                 % looks like we don't have pfstools installed... 
-                im = exrread(filename);
+                try
+                    [im, alpha] = exrread(filename);
+                catch
+                    warning('exrread was possibly not installed with alpha support.');
+                    im = exrread(filename);
+                end
             end
         end
         im = im2double(im);
