@@ -58,6 +58,12 @@ end
 %     end
 % end
 
+% it is checked if the file to read actually exists, this makes it clearer
+if exist(filename) ~= 2
+    error('The file %s does not exist.', filename);
+end
+
+
 switch lower(ext)
     case '.hdr'
         % radiance HDR format
@@ -70,11 +76,18 @@ switch lower(ext)
             alpha = im2double(alpha);
 
         catch
+            warning('pfstools was possibly not installed with alpha support.');
             try
                 im = pfs_read_image(filename);
             catch
+                warning('Could not use pfstools, now trying exrread.');
                 % looks like we don't have pfstools installed... 
-                im = exrread(filename);
+                try
+                    [im, alpha] = exrread(filename);
+                catch
+                    warning('exrread was possibly not installed with alpha support.');
+                    im = exrread(filename);
+                end
             end
         end
         im = im2double(im);
