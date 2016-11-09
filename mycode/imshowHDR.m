@@ -100,7 +100,7 @@ set(figHandle, 'UserData', figData);
 
     function updateDisplay(axesData)
         set(axesData.imgHandle, ...
-            'CData', min(max(axesData.img*axesData.imgScaleFactor, 0), 1));
+            'CData', min(max(axesData.img.*axesData.imgScaleFactor, 0), 1));
     end
 
 end
