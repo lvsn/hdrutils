@@ -1,7 +1,7 @@
 function [im, rotFcn, alpha, depth] = hdr_imread(filename, varargin)
 % Wrapper for imread that supports HDR formats.
 %
-%   [im, rotFcn] = hdr_imread(filename, ...)
+%   [im, rotFcn, alpha, depth] = hdr_imread(filename, ...)
 %
 % Additional options can be used as optional inputs to imread. In addition,
 % it also supports:
